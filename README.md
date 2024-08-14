@@ -15,7 +15,7 @@ Before you begin, ensure you have the following software installed:
 
 First, clone the Chatflow repository to your local machine:
 
-git clone https://github.com/Kedharkb/chatflow.git
+git clone https://github.com/Kedharkb/chatflow.git \\
 cd chatflow
 
 ## Step 2: Set Up Python Virtual Environment
