@@ -43,9 +43,3 @@ Search for "Promptflow" and install the extension. <br>
 
 ## Step6.  Create OpenAI Connection <br>
 pf connection create --file ./openai.yaml --set api_key=xxxxx --name open_ai_connection
-
-
-
-
-
-6
