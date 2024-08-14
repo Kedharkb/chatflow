@@ -43,3 +43,9 @@ Search for "Promptflow" and install the extension. <br>
 
 ## Step6.  Create OpenAI Connection <br>
 pf connection create --file ./openai.yaml --set api_key=xxxxx --name open_ai_connection
+
+## Step6.  Run Streamlit
+Add the pdf to pdfs folder 
+Input the pdf_name, vector_db and collection_name in the inputs of flow.dag.yaml
+streamlit run chatbot.py
+
