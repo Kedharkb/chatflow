@@ -1,0 +1,121 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  question:
+    type: string
+    default: Can you explain it mathematically?
+    is_chat_input: true
+  config:
+    type: object
+    default:
+      EMBEDDING_MODEL_DEPLOYMENT_NAME: text-embedding-ada-002
+      CHAT_MODEL_DEPLOYMENT_NAME: gpt-3.5-turbo
+      PROMPT_TOKEN_LIMIT: 3000
+      MAX_COMPLETION_TOKENS: 1024
+      VERBOSE: true
+      CHUNK_SIZE: 1024
+      CHUNK_OVERLAP: 128
+    is_chat_input: false
+  chat_history:
+    type: list
+    is_chat_input: false
+  pdf_name:
+    type: string
+    default: Signals&Sytems_Chapter1.pdf
+  vector_db:
+    type: string
+    default: faiss
+  use_history:
+    type: bool
+    default: true
+  collection_name:
+    type: string
+    default: signals_system
+outputs:
+  answer:
+    type: string
+    reference: ${generate_result.output}
+nodes:
+- name: setup_env
+  type: python
+  source:
+    type: code
+    path: setup_env.py
+  inputs:
+    connection: open_ai_connection
+    config: ${inputs.config}
+    pdf_name: ${inputs.pdf_name}
+    vector_db: ${inputs.vector_db}
+    use_history: ${inputs.use_history}
+  activate:
+    when: ${language_check.output}
+    is: true
+- name: build_chroma_index
+  type: python
+  source:
+    type: code
+    path: build_chroma_index.py
+  inputs:
+    pdf_path: ${setup_env.output.pdf_path}
+    collection_name: ${inputs.collection_name}
+  activate:
+    when: ${setup_env.output.vector_db}
+    is: chroma
+  aggregation: false
+- name: build_faiss_index
+  type: python
+  source:
+    type: code
+    path: build_faiss_index.py
+  inputs:
+    pdf_path: ${setup_env.output.pdf_path}
+    collection_name: ${inputs.collection_name}
+  activate:
+    when: ${setup_env.output.vector_db}
+    is: faiss
+- name: qna
+  type: python
+  source:
+    type: code
+    path: qna.py
+  inputs:
+    prompt: ${retreival.output.prompt}
+  aggregation: false
+- name: retreival
+  type: python
+  source:
+    type: code
+    path: retreival.py
+  inputs:
+    question: ${rewrite_question.output}
+    history: ${inputs.chat_history}
+    chroma_collection_name: ${build_chroma_index.output}
+    faiss_index_name: ${build_faiss_index.output}
+    use_history: ${setup_env.output.use_history}
+- name: language_check
+  type: python
+  source:
+    type: code
+    path: language_check.py
+  inputs:
+    question: ${inputs.question}
+- name: generate_result
+  type: python
+  source:
+    type: code
+    path: generate_result.py
+  inputs:
+    llm_result: ${qna.output}
+    language_fail: ${language_check.output}
+- name: rewrite_question
+  type: python
+  source:
+    type: code
+    path: rewrite_question.py
+  inputs:
+    question: ${inputs.question}
+    history: ${inputs.chat_history}
+  activate:
+    when: ${setup_env.output.env_ready}
+    is: true

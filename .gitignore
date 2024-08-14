@@ -1,0 +1,8 @@
+.env
+__pycache__/
+.promptflow
+!.promptflow/flow.tools.json
+.runs/
+documents
+pdfs
+uploads
