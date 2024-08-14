@@ -15,20 +15,20 @@ Before you begin, ensure you have the following software installed:
 
 First, clone the Chatflow repository to your local machine:
 
-git clone https://github.com/Kedharkb/chatflow.git \\
+git clone https://github.com/Kedharkb/chatflow.git  <br>
 cd chatflow
 
 ## Step 2: Set Up Python Virtual Environment
-Setting up a Python virtual environment will help manage dependencies:
+Setting up a Python virtual environment will help manage dependencies:<br>
 
-Install the python3-venv package:
-sudo apt install python3-venv
+Install the python3-venv package:<br>
+sudo apt install python3-venv<br>
 
-Create the virtual environment:
-python3 -m venv chatenv
-Activate the virtual environment:
+Create the virtual environment:<br>
+python3 -m venv chatenv<br>
+Activate the virtual environment:<br>
 
-source chatenv/bin/activate
+source chatenv/bin/activate <br>
 
 ## Step3. Install Dependencies for ChromaDB
 sudo apt-get update
