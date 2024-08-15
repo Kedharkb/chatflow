@@ -50,7 +50,7 @@ Expand the flows, select chatflow and click on open
 ![Alt text](assets/promptflow_visual.png)
 
 
-## Step7.  Run Streamlit
+## Step8.  Run Streamlit
 Add the pdf to pdfs folder  <br>
 Input the pdf_name, vector_db and collection_name in the inputs of flow.dag.yaml  <br>
 streamlit run chatbot.py
