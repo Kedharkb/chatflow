@@ -4,5 +4,4 @@ __pycache__/
 !.promptflow/flow.tools.json
 .runs/
 documents
-pdfs
 uploads
