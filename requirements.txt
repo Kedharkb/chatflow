@@ -12,4 +12,4 @@ streamlit==1.36.0
 tiktoken==0.7.0
 pysqlite3
 lingua-language-detector==2.0.2 
-pypdf==4.30
+pypdf==4.3.0
