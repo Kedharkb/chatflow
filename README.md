@@ -44,6 +44,12 @@ Search for "Promptflow" and install the extension. <br>
 ## Step6.  Create OpenAI Connection <br>
 pf connection create --file ./openai.yaml --set api_key=xxxxx --name open_ai_connection
 
+## Step7, To view the flow visually 
+Click on the promptflow extension on the left panel <br>
+Expand the flows, select chatflow and click on open
+![Alt text](assets/promptflow_visual.png)
+
+
 ## Step7.  Run Streamlit
 Add the pdf to pdfs folder  <br>
 Input the pdf_name, vector_db and collection_name in the inputs of flow.dag.yaml  <br>
