@@ -49,23 +49,23 @@ pip install -r requirements.txt
 ```
 
 ## Step5. Open Visual Studio Code. <br>
-Navigate to the Extensions view (click on the Extensions icon in the Sidebar or press Ctrl+Shift+X). <br>
-Search for "Promptflow" and install the extension. <br>
+- Navigate to the Extensions view (click on the Extensions icon in the Sidebar or press Ctrl+Shift+X). <br>
+- Search for "Promptflow" and install the extension. <br>
 
 ## Step6.  Create OpenAI Connection <br>
 ```bash
 pf connection create --file ./openai.yaml --set api_key=xxxxx --name open_ai_connection
 ```
 
-## Step7, To view the flow visually 
-Click on the promptflow extension on the left panel <br>
-Expand the flows, select chatflow and click on open
+## Step7 To view the flow visually 
+- Click on the promptflow extension on the left panel <br>
+- Expand the flows, select chatflow and click on open
 ![Alt text](assets/promptflow_visual.png)
 
 
 ## Step8.  Run Streamlit
-Add the pdf to pdfs folder  <br>
-Input the pdf_name, vector_db and collection_name in the inputs of flow.dag.yaml  <br>
+- Add the pdf to pdfs folder  <br>
+- Input the pdf_name, vector_db and collection_name in the inputs of flow.dag.yaml  <br>
 ```bash
 streamlit run chatbot.py
 ```
