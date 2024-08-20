@@ -25,9 +25,38 @@ def load_history():
     except Exception as e:
         return []
 
+def save_uploaded_file(uploaded_file):
+    if not os.path.exists('./pdfs'):
+        os.makedirs('./pdfs')
+    
+    file_path = os.path.join('./pdfs', uploaded_file.name)
+    with open(file_path, 'wb') as f:
+        f.write(uploaded_file.getbuffer())
+    return file_path
+
 
 def main():
     st.title("Chatbot")
+    st.sidebar.header("Configuration Settings")
+
+    # Configuration settings inputs
+    prompt_token_limit = st.sidebar.number_input("PROMPT_TOKEN_LIMIT", min_value=1, value=3000)
+    max_completion_tokens = st.sidebar.number_input("MAX_COMPLETION_TOKENS", min_value=1, value=1024)
+    chunk_size = st.sidebar.number_input("CHUNK_SIZE", min_value=1, value=1024)
+    chunk_overlap = st.sidebar.number_input("CHUNK_OVERLAP", min_value=0, value=128)
+    use_history = st.sidebar.checkbox("Use history", value=True)
+    vector_db = st.sidebar.selectbox("Vector DB", options=["chroma", "faiss"], index=0)
+    collection_name = st.sidebar.text_input("Collection Name", value="default_collection")
+
+    # PDF upload button in the sidebar
+    uploaded_pdf = st.sidebar.file_uploader("Upload a PDF", type="pdf")
+
+    if uploaded_pdf is not None:
+        pdf_name = uploaded_pdf.name
+        st.sidebar.write(f"Uploaded PDF: {pdf_name}")
+        saved_file_path = save_uploaded_file(uploaded_pdf)
+        st.sidebar.success(f"PDF saved to {saved_file_path}")
+    
     chat_history = []
     flow = pf._load_flow(source='./flow.dag.yaml')
     chat_history = load_history()
@@ -38,7 +67,7 @@ def main():
             st.markdown(msg["question"])
         with st.chat_message("assistant"):
             st.markdown(msg["answer"])
-
+    
     if prompt := st.chat_input("What is up?"):
         with st.chat_message("user"):
             st.markdown(prompt)
@@ -48,7 +77,24 @@ def main():
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
             full_response = ""
-            response = flow.invoke(inputs={'question':prompt,'chat_history':chat_history})
+            config = {"EMBEDDING_MODEL_DEPLOYMENT_NAME":"text-embedding-ada-002",
+                      "CHAT_MODEL_DEPLOYMENT_NAME":"gpt-3.5-turbo",
+                      "PROMPT_TOKEN_LIMIT":prompt_token_limit,
+                      "MAX_COMPLETION_TOKENS":max_completion_tokens,
+                      "VERBOSE":True,
+                      "CHUNK_SIZE":chunk_size,
+                      "CHUNK_OVERLAP":chunk_overlap
+                      }
+
+            response = flow.invoke(inputs={'question':prompt,
+                                           'chat_history':chat_history,
+                                           'config':config,
+                                           'use_history':use_history,
+                                           'vector_db':vector_db,
+                                           'collection_name':collection_name,
+                                           'pdf_name':pdf_name
+                                           })
+            
             # Simulate stream of response with milliseconds delay
             for chunk in response.output["answer"].split():
                 full_response += chunk + " "
