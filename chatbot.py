@@ -40,10 +40,10 @@ def main():
     st.sidebar.header("Configuration Settings")
 
     # Configuration settings inputs
-    prompt_token_limit = st.sidebar.number_input("PROMPT_TOKEN_LIMIT", min_value=1, value=3000)
-    max_completion_tokens = st.sidebar.number_input("MAX_COMPLETION_TOKENS", min_value=1, value=1024)
-    chunk_size = st.sidebar.number_input("CHUNK_SIZE", min_value=1, value=1024)
-    chunk_overlap = st.sidebar.number_input("CHUNK_OVERLAP", min_value=0, value=128)
+    prompt_token_limit = st.sidebar.number_input("PROMPT TOKEN LIMIT", min_value=1, value=3000)
+    max_completion_tokens = st.sidebar.number_input("MAX COMPLETION TOKENS", min_value=1, value=1024)
+    chunk_size = st.sidebar.number_input("CHUNK SIZE", min_value=1, value=1024)
+    chunk_overlap = st.sidebar.number_input("CHUNK OVERLAP", min_value=0, value=128)
     use_history = st.sidebar.checkbox("Use history", value=True)
     vector_db = st.sidebar.selectbox("Vector DB", options=["chroma", "faiss"], index=0)
     collection_name = st.sidebar.text_input("Collection Name", value="default_collection")
