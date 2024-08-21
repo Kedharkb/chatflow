@@ -57,6 +57,10 @@ def main():
         saved_file_path = save_uploaded_file(uploaded_pdf)
         st.sidebar.success(f"PDF saved to {saved_file_path}")
     
+    if st.sidebar.button("Clear Chat History"):
+        delete_history_file()
+        st.sidebar.success("Chat history cleared!")
+    
     chat_history = []
     flow = pf._load_flow(source='./flow.dag.yaml')
     chat_history = load_history()

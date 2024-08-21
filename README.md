@@ -64,8 +64,6 @@ pf connection create --file ./openai.yaml --set api_key=xxxxx --name open_ai_con
 
 
 ## Step8.  Run Streamlit
-- Add the pdf to pdfs folder
-- Input the pdf_name, vector_db and collection_name in the inputs of flow.dag.yaml
 ```bash
 streamlit run chatbot.py
 ```
