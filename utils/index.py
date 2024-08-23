@@ -7,13 +7,12 @@ from langchain.vectorstores import Chroma, FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
 
 
-
-
 class FAISSIndex:
-    def __init__(self, index: Index, embedding: Any,index_name:str) -> None:
+    def __init__(self, index: Index, embedding: Any,index_name:str,documents_path:str) -> None:
         self.index = index
         self.embedding = embedding
         self.index_name = index_name
+        self.documents_path = documents_path
 
 
     def query(self, text: str, top_k: int = 10) -> List:
@@ -29,15 +28,15 @@ class FAISSIndex:
             index_to_docstore_id={},
         )
         vector_store.add_documents(documents=documents)
-        vector_store.save_local(folder_path='./documents',index_name=self.index_name)
+        vector_store.save_local(folder_path=self.documents_path,index_name=self.index_name)
     
     def load_vectorstore(self):
-        vector_store=FAISS.load_local(folder_path='./documents',index_name=self.index_name,embeddings=self.embedding, allow_dangerous_deserialization=True)
+        vector_store=FAISS.load_local(folder_path=self.documents_path,index_name=self.index_name,embeddings=self.embedding, allow_dangerous_deserialization=True)
         return vector_store
     
     def index_exists(self):
         # Check if the index directory exists
-        return os.path.exists(f'./documents/{self.index_name}.faiss')
+        return os.path.exists(f'{self.documents_path}/{self.index_name}.faiss')
 
 
 

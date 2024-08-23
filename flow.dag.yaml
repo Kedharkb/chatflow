@@ -4,7 +4,7 @@ environment:
 inputs:
   question:
     type: string
-    default: Can you explain it mathematically?
+    default: Can you explain Principle of superposition?
     is_chat_input: true
   config:
     type: object
@@ -20,6 +20,7 @@ inputs:
   chat_history:
     type: list
     is_chat_input: false
+    default: []
   pdf_name:
     type: string
     default: Signals&Sytems_Chapter1.pdf
@@ -70,7 +71,7 @@ nodes:
     path: build_faiss_index.py
   inputs:
     pdf_path: ${setup_env.output.pdf_path}
-    collection_name: ${inputs.collection_name}
+    faiss_index_name: ${inputs.collection_name}
   activate:
     when: ${setup_env.output.vector_db}
     is: faiss
@@ -88,7 +89,7 @@ nodes:
     type: code
     path: retreival.py
   inputs:
-    question: ${rewrite_question.output}
+    question: ${rewrite_question.output.rewritten_question1}
     history: ${inputs.chat_history}
     chroma_collection_name: ${build_chroma_index.output}
     faiss_index_name: ${build_faiss_index.output}
@@ -106,8 +107,11 @@ nodes:
     type: code
     path: generate_result.py
   inputs:
-    llm_result: ${qna.output}
-    language_fail: ${language_check.output}
+    result1: ${qna.output}
+    result2: ${qna2.output}
+    question1: ${rewrite_question.output.rewritten_question1}
+    question2: ${rewrite_question.output.rewritten_question2}
+    language_check: ${language_check.output}
 - name: rewrite_question
   type: python
   source:
@@ -119,3 +123,21 @@ nodes:
   activate:
     when: ${setup_env.output.env_ready}
     is: true
+- name: retreival2
+  type: python
+  source:
+    type: code
+    path: retreival.py
+  inputs:
+    question: ${rewrite_question.output.rewritten_question2}
+    history: ${inputs.chat_history}
+    chroma_collection_name: ${build_chroma_index.output}
+    faiss_index_name: ${build_faiss_index.output}
+    use_history: ${setup_env.output.use_history}
+- name: qna2
+  type: python
+  source:
+    type: code
+    path: qna.py
+  inputs:
+    prompt: ${retreival2.output.prompt}

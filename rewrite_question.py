@@ -1,19 +1,18 @@
 from jinja2 import Environment, FileSystemLoader
 import os
 from utils.logging import log
-from utils.oai import  render_jinja_template_with_token_limit
+from utils.oai import  render_jinja_template_with_token_limit, get_chat_model, load_template
 from promptflow import tool
-from langchain_openai import ChatOpenAI
+import json
+
 
 @tool
 def rewrite_question(question: str, history: list):
-    template = Environment(
-        loader=FileSystemLoader(os.path.dirname(os.path.abspath(__file__)))
-    ).get_template("rewrite_question_prompt.md")
+    template = load_template("rewrite_question_prompt.md")
+    
     token_limit = int(os.environ.get("PROMPT_TOKEN_LIMIT"))
 
-    max_completion_tokens = int(os.environ["MAX_COMPLETION_TOKENS"])
-    chat_model = ChatOpenAI(model_name=os.environ.get("CHAT_MODEL_DEPLOYMENT_NAME"),max_tokens=max_completion_tokens)
+    chat_model = get_chat_model()
 
     while True:
         try:
@@ -27,5 +26,7 @@ def rewrite_question(question: str, history: list):
     
     rewritten_question = chat_model.invoke([ ("human", prompt)])
     log(f"Rewritten question: {rewritten_question}")
-
-    return rewritten_question.content
+    data = json.loads(rewritten_question.content)
+    question1 = data.get('question1')
+    question2 = data.get('question2')    
+    return {'rewritten_question1':question1,'rewritten_question2':question2}
