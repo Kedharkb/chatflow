@@ -5,7 +5,7 @@ import chromadb
 from chromadb.utils.embedding_functions.openai_embedding_function import OpenAIEmbeddingFunction
 from langchain.vectorstores import Chroma, FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
-
+from utils.logging import log
 
 class FAISSIndex:
     def __init__(self, index: Index, embedding: Any,index_name:str,documents_path:str) -> None:
@@ -18,6 +18,7 @@ class FAISSIndex:
     def query(self, text: str, top_k: int = 10) -> List:
         vector_store = self.load_vectorstore()
         docs = vector_store.similarity_search(query=text,k=top_k)
+        log(f'docs,{docs}')
         return docs
 
     def save_documents(self, documents:List) -> None:

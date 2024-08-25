@@ -141,3 +141,9 @@ nodes:
     path: qna.py
   inputs:
     prompt: ${retreival2.output.prompt}
+- name: llm_node_a63o
+  type: llm
+  source:
+    type: code
+    path: llm_node_a63o.jinja2
+  inputs: {}
